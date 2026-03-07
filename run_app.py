@@ -28,13 +28,15 @@ def setup_backend():
     print("SETTING UP DJANGO BACKEND")
     print("="*60)
     
+    backend_dir = "/vercel/share/v0-project"
+    
     # Install dependencies
     print("\n1. Installing Python dependencies...")
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "django", "djangorestframework", "django-cors-headers"], check=False)
     
     # Run migrations
     print("2. Running database migrations...")
-    subprocess.run([sys.executable, "manage.py", "migrate", "--run-syncdb"], check=False)
+    subprocess.run([sys.executable, "manage.py", "migrate", "--run-syncdb"], cwd=backend_dir, check=False)
     
     print("3. Backend setup complete!")
 
@@ -44,7 +46,7 @@ def setup_frontend():
     print("SETTING UP NEXT.JS FRONTEND")
     print("="*60)
     
-    frontend_dir = "frontend"
+    frontend_dir = "/vercel/share/v0-project/frontend"
     
     if not os.path.exists(frontend_dir):
         print(f"Frontend directory not found at {frontend_dir}")
@@ -80,9 +82,10 @@ def main():
     print("="*70)
     
     # Start backend
+    backend_dir = "/vercel/share/v0-project"
     backend_process = run_command(
         [sys.executable, "manage.py", "runserver", "0.0.0.0:8000"],
-        cwd=".",
+        cwd=backend_dir,
         name="Django Backend (Port 8000)"
     )
     
@@ -90,7 +93,7 @@ def main():
     time.sleep(3)
     
     # Start frontend
-    frontend_dir = "frontend"
+    frontend_dir = "/vercel/share/v0-project/frontend"
     if os.path.exists(frontend_dir):
         if platform.system() == "Windows":
             frontend_process = run_command(
